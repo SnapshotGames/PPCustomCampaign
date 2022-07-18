@@ -1,0 +1,24 @@
+﻿{
+  "ID": "com.ssg.custom-campaign",
+  "Author": [
+    {
+      "Key": "English",
+      "Value": "Kaloyan Nachev (Kal)"
+    }
+  ],
+  "Version": "1.0.1",
+  "Name": [
+    {
+      "Key": "English",
+      "Value": "Custom Campaign"
+    }
+  ],
+  "Description": [
+    {
+      "Key": "English",
+      "Value": "Provides additional options for starting new campaign.\n\nOptions are accessible in mod settings. Changes are part of the campaign's save, changing mod options will affect only new campaigns."
+    }
+  ],
+  "AssemblyName" :  "CustomCampaign.dll",
+  "Dependencies": []
+}
