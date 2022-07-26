@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CustomCampaign</RootNamespace>
     <AssemblyName>CustomCampaign</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,6 +64,9 @@
     <Compile Include="Patches\ManufacturableItem.cs" />
     <Compile Include="Patches\ReloadAbility.cs" />
     <Compile Include="Patches\ItemStorage.cs" />
+    <Compile Include="Patches\UIInventoryList.cs" />
+    <Compile Include="Patches\UIInventorySlot.cs" />
+    <Compile Include="Patches\UIInventorySlotSideButton.cs" />
     <Compile Include="Patches\UIModuleWeaponSelection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tactical.cs" />

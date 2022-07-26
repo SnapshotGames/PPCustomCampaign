@@ -39,12 +39,16 @@ namespace CustomCampaign
 		public bool NoAmmo => _data?.NoAmmo ?? false;
 		public int HavenDefeneseFrequency => _data?.HavenDefenseFrequency ?? 100;
 
+		private bool _gameStarted = false;
+
 		public override void Init() {
 			_sharedData = SharedData.GetSharedDataFromGame();
 			_difficultiesMap = SharedData.GetSharedDataFromGame().DifficultyLevels;
 		}
 
 		public override void OnGeoscapeStart() {
+			_gameStarted = true;
+
 			if (_data == null) {
 				if (Controller.IsFromSaveGame) {
 					// Loaded old save withot mod data, use default mod settings
@@ -85,7 +89,7 @@ namespace CustomCampaign
 			if (!Controller.IsFromSaveGame)
 				UpdateStartingResources();
 
-			if(Controller.IsFromSaveGame ) {
+			if (Controller.IsFromSaveGame) {
 				UpdateCurrentWorldPopulation();
 			}
 
@@ -97,12 +101,12 @@ namespace CustomCampaign
 			int current = Controller.CurrentPopulation;
 			var field = typeof(GeoLevelController).GetProperty(nameof(_data.CurrentPopulation), BindingFlags.Public | BindingFlags.Instance);
 			field.SetValue(Controller, _data.CurrentPopulation);
-			Main.Logger.LogInfo($"Chaning world popualtion from {current} to { _data.CurrentPopulation} =  {Controller.CurrentPopulation}");
+			Main.Logger.LogInfo($"Chaning world popualtion from {current} to { _data.CurrentPopulation} = {Controller.CurrentPopulation}");
 
 			// Refresh ui bar
 			var method = typeof(UIModuleInfoBar).GetMethod("SetPopulationVisibility", BindingFlags.NonPublic | BindingFlags.Instance);
-			method.Invoke( Controller.View.GeoscapeModules.ResourcesModule, new object[0]);
-			
+			method.Invoke(Controller.View.GeoscapeModules.ResourcesModule, new object[0]);
+
 		}
 
 		private void UpdateStartingResources() {
@@ -166,7 +170,9 @@ namespace CustomCampaign
 		}
 
 		public override object RecordGeoscapeInstanceData() {
-			_data.CurrentPopulation = Controller.CurrentPopulation;
+			// Record current population only when playing, ignore autosave after tactical as population is not corrected yet according to mod values
+			if (_gameStarted || _data.CurrentPopulation == 0)
+				_data.CurrentPopulation = Controller.CurrentPopulation;
 			return _data;
 		}
 		public override void ProcessGeoscapeInstanceData(object instanceData) {
@@ -208,14 +214,17 @@ namespace CustomCampaign
 
 			int old = delta;
 
-			int multiplier = Math.Max(0, _data.HumanPopulationLost);
-			delta = (delta * multiplier) / 100;
 
-			//Main.Logger.LogInfo($"Changed population lost from '{old}' to '{delta}'");
+			long multiplier = Math.Max(0, _data.HumanPopulationLost);
+			long res = ((long)delta * multiplier) / 100;
+
+			delta = (int)res;
 
 			return delta;
 		}
 		public int GetItemManufactureCost(int cost) {
+			if (_data == null) return cost;
+
 			if (_data.ItemManufactureSpeed == 100) return cost;
 
 			if (_data.ItemManufactureSpeed <= 0)
